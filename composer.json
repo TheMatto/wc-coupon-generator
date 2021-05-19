@@ -1,0 +1,28 @@
+{
+    "name": "dominatus/wc-coupon-generator",
+    "description": "WooCommerce Coupon Generator",
+    "type": "project",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "Matic Jan",
+            "email": "matic.jan@dominatus.si"
+        }
+    ],
+    "repositories": [
+        {
+            "name": "dominatus/wordpress",
+            "type": "vcs",
+            "url": "https://github.com/dominatus-team/wordpress-framework"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Dominatus\\CouponGenerator\\": "app/"
+        }
+    },
+    "require": {
+        "dominatus/wordpress": "dev-main",
+        "twig/twig": "3.0"
+    }
+}
