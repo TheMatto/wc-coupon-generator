@@ -1,0 +1,27 @@
+#coupon-generator-app {
+    .progress {
+        .percentage {
+            text-align: center;
+            font-size: 50px;
+            line-height: 80px;
+        }
+        .max-bar {
+            height: 50px;
+            background: #DDD;
+            position: relative;
+            .value-fill {
+                position: absolute;
+                background: #2271b1;
+                height: 100%;
+            }
+        }
+    }
+    .generator-options {
+        .form-input {
+            margin-bottom: 15px;
+            label {
+                display: block;
+            }
+        }
+    }
+}

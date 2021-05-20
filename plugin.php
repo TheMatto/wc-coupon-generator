@@ -26,8 +26,10 @@ Store::set('MAIN_DIR_PATH', plugin_dir_path(__FILE__));
 Store::set('MAIN_DIR_URL', plugin_dir_url(__FILE__));
 Store::set('MAIN_FILE', __FILE__);
 
+require 'routes/api.php';
 require 'routes/hooks.php';
 require 'routes/ajax.php';
+require 'routes/menu.php';
 
 ResourceManager::addFrom(Store::get('MAIN_DIR_PATH') . '/dist/')
 ->webpackBundles('coupon-generator');

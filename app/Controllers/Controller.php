@@ -2,18 +2,13 @@
 
 namespace Dominatus\CouponGenerator\Controllers;
 
-use Dominatus\WordPress\{Singleton, View};
-use Dominatus\CouponGenerator\Store;
+use Dominatus\WordPress\Singleton;
+use Dominatus\CouponGenerator\View;
 
 class Controller extends Singleton
 {
-    protected View $view;
-
-    protected function __construct()
+    public function render(string $view, array $data = [])
     {
-        $this->view = new View(
-            Store::get('MAIN_DIR_PATH') . '/resources/views',
-            Store::get('PRODUCTION')
-        );
+        return View::make($view, $data);
     }
 }
