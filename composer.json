@@ -23,6 +23,7 @@
     },
     "require": {
         "dominatus/wordpress": "dev-main",
-        "twig/twig": "3.0"
+        "twig/twig": "3.0",
+        "phpoffice/phpspreadsheet": "^1.17"
     }
 }

@@ -3,6 +3,8 @@
 namespace Dominatus\CouponGenerator\Controllers;
 
 use Dominatus\WordPress\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class GeneratorController extends Controller
 {
@@ -20,6 +22,8 @@ class GeneratorController extends Controller
             $coupon = new \WC_Coupon();
             $coupon->set_code($code);
             $coupon->set_amount($request->input('amount'));
+            $coupon->set_usage_limit(1);
+            $coupon->set_discount_type('percent');
             $coupon->add_meta_data('_generator_made', 1, true);
             $coupon->save();
         }
@@ -44,33 +48,84 @@ class GeneratorController extends Controller
             'meta_value' => 1
         ]);
 
-        $views['generator'] = sprintf(
-            '<a href="%s" class="%s">%s <span class="count">(%s)</span></a>',
-            get_admin_url() . '/edit.php?post_type=shop_coupon&generator_made',
-            $request->has('generator_made') ? 'current' : '',
-            __('Generator', 'wc-coupon-generator'),
-            count($query->posts)
-        );
+        $views['generator'] = $this->render('backend/views-edit', [
+            'url' => 'edit.php?post_type=shop_coupon&generator_made',
+            'current' => $request->has('generator_made'),
+            'text' => __('Generator', 'wc-coupon-generator'),
+            'count' => count($query->posts)
+        ]);
 
         return $views;
     }
 
     public function parseQuery(Request $request, \WP_Query $query)
     {
-        if (
-            is_admin()
-            && $request->query('post_type') == 'shop_coupon'
-            && $request->has('generator_made')
-        ) {
-            $query->set('meta_query', [
-                [
-                    'key' => '_generator_made',
-                    'value' => 1,
-                    'compare' => '='
-                ]
-            ]);
+        if (is_admin() && $request->query('post_type') == 'shop_coupon') {
+            if ($request->has('generator_made')) {
+                $query->set('meta_query', [
+                    [
+                        'key' => '_generator_made',
+                        'value' => 1,
+                        'compare' => '='
+                    ]
+                ]);
+            }
+
+            if ($request->has('export')) {
+                $query->set('posts_per_page', -1);
+            }
         }
 
         return $query;
+    }
+
+    public function exportXlsx(Request $request, array $posts)
+    {
+        if (
+            is_admin()
+            && $request->query('post_type') == 'shop_coupon'
+            && $request->has('export')
+        ) {
+            $exportArray = [];
+
+            $spreadsheet = new Spreadsheet();
+            $worksheet = $spreadsheet->getActiveSheet();
+
+            $worksheet->fromArray([
+                [
+                    'Koda kupona'
+                ]
+            ], null, 'A1');
+
+            foreach ($posts as $index => $post) {
+                $worksheet->fromArray([
+                    [
+                        $post->post_title
+                    ]
+                ], null, 'A' . ($index + 2));
+            }
+
+            $writer = new Xlsx($spreadsheet);
+
+            header('Content-Type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment;filename="coupon-export.xlsx"');
+            header('Cache-Control: max-age=0');
+
+            $writer->save('php://output');
+
+            exit;
+        }
+
+        return $posts;
+    }
+
+    public function exportButton(Request $request, string $which)
+    {
+        if ($which === 'top' && $request->query('post_type') == 'shop_coupon') {
+            return $this->render('backend/export-button', [
+                'text' => __('Export', 'wc-coupon-generator'),
+                'generatorMade' => $request->has('generator_made')
+            ]);
+        }
     }
 }

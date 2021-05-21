@@ -1,0 +1,7 @@
+<a href="{{ url }}" class="{{ current ? 'current' }}">
+    {{ text }} <span class="count">({{ count }})</span>
+</a>
+
+{% if current %}
+    <input type="hidden" name="generator_made" value="testiram">
+{% endif %}

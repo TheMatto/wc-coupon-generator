@@ -20,6 +20,7 @@ namespace Dominatus\CouponGenerator;
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Dominatus\WordPress\ResourceManager;
+use Dominatus\WordPress\Request;
 
 Store::set('PRODUCTION', false);
 Store::set('MAIN_DIR_PATH', plugin_dir_path(__FILE__));
