@@ -12,7 +12,7 @@ class GeneratorController extends Controller
     {
         $quantity = $request->input('quantity');
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < $quantity; $i++) {
             $code = $this->generateCode(8);
 
             while (wc_get_coupon_id_by_code($code)) {
@@ -21,15 +21,18 @@ class GeneratorController extends Controller
 
             $coupon = new \WC_Coupon();
             $coupon->set_code($code);
+            $coupon->set_discount_type('percent');
             $coupon->set_amount($request->input('amount'));
             $coupon->set_usage_limit(1);
-            $coupon->set_discount_type('percent');
+            $coupon->set_date_expires('2021-12-31');
             $coupon->add_meta_data('_generator_made', 1, true);
             $coupon->save();
         }
 
         return [
-            'success' => true
+            'success' => true,
+            'amount' => $request->input('amount'),
+            'quantity' => $quantity
         ];
     }
 

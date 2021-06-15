@@ -24,7 +24,7 @@ export default {
     },
     computed: {
         percentage() {
-            return Math.round((this.max / 100) * this.value);
+            return Math.round((this.value / this.max) * 100);
         }
     }
 }

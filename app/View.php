@@ -10,7 +10,8 @@ class View extends BaseView
     protected function __construct()
     {
         $this->templatePath = Store::get('MAIN_DIR_PATH') . '/resources/views';
-        $this->cache = Store::get('PRODUCTION');
+        $this->cachePath = Store::get('MAIN_DIR_PATH') . '/resources/views/cache';
+        $this->cacheEnabled = Store::get('PRODUCTION');
 
         $this->init();
     }

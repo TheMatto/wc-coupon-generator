@@ -12,7 +12,7 @@
                 <input type="text" placeholder="0" v-model="amount">
             </div>
             <div class="form-input">
-                <button class="button button-primary" @click="generate">Generate</button>
+                <button class="button button-primary" :class="{ disabled: generating }" @click="generate">Generate</button>
             </div>
         </div>
     </div>
@@ -29,9 +29,10 @@ export default {
     },
     data() {
         return {
+            generating: false,
             quantity: 10,
             generated: 0,
-            amount: '',
+            amount: 0,
         };
     },
     computed: {
@@ -47,16 +48,27 @@ export default {
     },
     methods: {
         generate() {
-            // TODO: hardcoded url
-            axios.post('/wp-json/coupon-generator/v1/generate', {
-                quantity: this.batchSize,
-                amount: this.amount
-            }).then((response) => {
+            if (this.generating) {
+                return;
+            }
+
+            this.generating = true;
+            this.generated = 0;
+            this.batch();
+        },
+        batch() {
+            const formData = new FormData();
+            formData.append('quantity', this.batchSize);
+            formData.append('amount', this.amount);
+
+            axios.post('/wp-json/coupon-generator/v1/generate', formData).then((response) => {
+                console.log(response.data);
                 if (response.data.success === true) {
-                    this.generated += 10;
+                    this.generated += this.batchSize;
                     if (this.batchSize > 0) {
-                        this.generate();
+                        this.batch();
                     } else {
+                        //this.generating = false;
                         alert('Completed!');
                     }
                 } 

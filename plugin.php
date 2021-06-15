@@ -22,7 +22,7 @@ require_once __DIR__ . '/vendor/autoload.php';
 use Dominatus\WordPress\ResourceManager;
 use Dominatus\WordPress\Request;
 
-Store::set('PRODUCTION', false);
+Store::set('PRODUCTION', true);
 Store::set('MAIN_DIR_PATH', plugin_dir_path(__FILE__));
 Store::set('MAIN_DIR_URL', plugin_dir_url(__FILE__));
 Store::set('MAIN_FILE', __FILE__);
